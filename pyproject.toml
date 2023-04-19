@@ -22,4 +22,4 @@ classifiers = [
 "Bug Tracker" = "https://github.com/ipeevski/misp/issues"
 
 [project.scripts]
-mmisp = "mmisp.process:main"
+mmisp = "mmisp:process"
