@@ -19,7 +19,7 @@ def replacements(string, input_file):
         ext=os.path.splitext(input_file)[1]
     )
 
-def runModule(input_file, process, verbosity=0):
+def runModule(input_file, process, verbosity=0, progress_callback=None):
     importlib.invalidate_caches()
     module = importlib.import_module(f'.modules.{process["module"]}.main', 'mmisp')
     func = getattr(module, 'run')
@@ -30,8 +30,8 @@ def runModule(input_file, process, verbosity=0):
     if 'options' in process:
         kwargs["options"] = process["options"]
 
-    if verbosity:
-        kwargs["progress_callback"] = update_progress
+    if progress_callback:
+        kwargs["progress_callback"] = progress_callback
 
     thread = threading.Thread(
         target=func,
@@ -58,19 +58,19 @@ def runCmd(input_file, process, verbosity=0):
     thread.start()
     return thread
 
-def run(input_file, processes, parallel=False, verbosity=0):
+def run(input_file, processes, parallel=False, verbosity=0, progress_callback=None):
     threads = []
     for process in processes:
         if process['step'] == 'parallel':
             if verbosity >= 2:
                 print('Running parallel processes')
-            run(input_file, process['steps'], parallel=True, verbosity=verbosity)
+            run(input_file, process['steps'], parallel=True, verbosity=verbosity, progress_callback=progress_callback)
             continue
 
         if process['step'] == 'module':
             if verbosity >= 2:
                 print(f'Running module {process["module"]}')
-            thread = runModule(input_file, process, verbosity=verbosity)
+            thread = runModule(input_file, process, verbosity=verbosity, progress_callback=progress_callback)
         elif process['step'] == 'cmd':
             if verbosity >= 2:
                 print(f'Running cmd {process["cmd"]}')
@@ -117,7 +117,7 @@ if __name__ == '__main__':
     if args.verbose:
         pbar = tqdm(total=100)
 
-    run(input_file, items['process'], verbosity=args.verbose)
+    run(input_file, items['process'], verbosity=args.verbose, progress_callback=update_progress)
 
     # run('vid.mp4',
     #   [{'step': 'module', 'module': 'ffmpeg', 'output': 'output.mp4', 'options': {'vcodec': 'libx265'}}],
