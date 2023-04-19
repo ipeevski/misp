@@ -75,6 +75,12 @@ def run(input_file, processes, parallel=False, verbosity=0, progress_callback=No
             if verbosity >= 2:
                 print(f'Running cmd {process["cmd"]}')
             thread = runCmd(input_file, process, verbosity=verbosity)
+        elif process['step'] == 'del':
+            os.remove(input_file)
+            return
+        elif process['step'] == 'move':
+            os.rename(input_file, process['output'])
+            return
 
         if not parallel:
             thread.join()
@@ -85,7 +91,7 @@ def run(input_file, processes, parallel=False, verbosity=0, progress_callback=No
         thread.join()
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='Process multimedia via a pipeline.')
     parser.add_argument('input_file', metavar='filename',
                         help='A filename to the input file to be processed')
@@ -125,3 +131,7 @@ if __name__ == '__main__':
 
     if args.verbose:
         pbar.close()
+
+
+if __name__ == '__main__':
+    main()
