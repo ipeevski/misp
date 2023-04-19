@@ -1,0 +1,16 @@
+process:
+  - step: "module"
+    module: "ffmpeg"
+    output: "{path}//{base_name}_out.mp4"
+    ffmpeg_options:
+      vcodec: "libx265"
+  - step: "parallel"
+    steps:
+      - step: "module"
+        module: "ffmpeg"
+        output: "{path}//{base_name}_out2.mp4"
+        ffmpeg_options:
+          vcodec: "libx265"
+      - step: "cmd"
+        cmd: "ffmpeg -i {input} -vcodec libx265 {output}"
+        output: "{path}//{base_name}_out3.mp4"
