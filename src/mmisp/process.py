@@ -21,7 +21,7 @@ def replacements(string, input_file):
 
 def runModule(input_file, process, verbosity=0):
     importlib.invalidate_caches()
-    module = importlib.import_module(f'modules.{process["module"]}.main')
+    module = importlib.import_module(f'.modules.{process["module"]}.main', 'mmisp')
     func = getattr(module, 'run')
 
     output_file = replacements(process['output'], input_file)
