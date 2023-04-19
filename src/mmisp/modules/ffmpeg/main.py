@@ -27,6 +27,7 @@ def run(input_filename, output_filename,
 
     if verbosity:
         print(' '.join(ffmpeg_cmd.compile()))
+
     process = (
         ffmpeg_cmd.run_async(quiet=True, overwrite_output=True)
     )
@@ -46,7 +47,7 @@ def run(input_filename, output_filename,
             if progress_callback:
                 progress_callback(percent_complete)
 
-            if verbosity:
+            if verbosity >= 2:
                 print(f'Sec: {current_time} of {total_time}, perc: {percent_complete}, speed: {float(speed)}')
 
         buffer = process.stderr.read(160)

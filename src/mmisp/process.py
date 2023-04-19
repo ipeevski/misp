@@ -30,7 +30,7 @@ def runModule(input_file, process, verbosity=0):
     if 'options' in process:
         kwargs["options"] = process["options"]
 
-    if 'progress_callback' in process:
+    if verbosity:
         kwargs["progress_callback"] = update_progress
 
     thread = threading.Thread(
@@ -46,11 +46,9 @@ def runModule(input_file, process, verbosity=0):
 def runCmd(input_file, process, verbosity=0):
     output_file = replacements(process['output'], input_file)
     args = [process['cmd'].format(input=input_file, output=output_file).split(' ')]
-    if verbosity:
-        args.append('-' + ''.join('v' for i in range(verbosity)))
 
     if verbosity:
-        print(' '.join(args))
+        print(' '.join(args[0]))
 
     thread = threading.Thread(
         target=subprocess.run,

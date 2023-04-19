@@ -12,5 +12,5 @@ process:
         options:
           vcodec: "libx265"
       - step: "cmd"
-        cmd: "ffmpeg -y -hide_banner -nostats -loglevel quiet -x265-params log-level=quiet -i {input} -vcodec libx265 {output}"
+        cmd: "ffmpeg -y -hide_banner -nostats -loglevel quiet -x265-params log-level=quiet -i {input} -vcodec libx265 -x265-params log-level=1 {output}"
         output: "{path}//{base_name}_out3.mp4"
