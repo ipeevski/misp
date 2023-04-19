@@ -7,6 +7,8 @@ import threading
 import yaml
 from tqdm import tqdm
 
+pbar = None
+
 def update_progress(percent_complete):
     if pbar:
         pbar.n = percent_complete
