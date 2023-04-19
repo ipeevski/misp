@@ -1,4 +1,4 @@
-import ffmpeg
+import ffmpeg as ffmpeg
 import re
 import math
 from datetime import datetime
@@ -7,7 +7,10 @@ percent_complete = 0
 current_time = 0
 total_time = 0
 
-def run(input_filename, output_filename, progress_callback=None, ffmpeg_options={}):
+def run(input_filename, output_filename,
+    options={},
+    progress_callback=None,
+    verbosity=0):
     # percent_complete = 0
     # current_time = 0
 
@@ -20,9 +23,10 @@ def run(input_filename, output_filename, progress_callback=None, ffmpeg_options=
 
     input = ffmpeg.input(input_filename)
     # .filter('fps', fps=25, round='up')
-    ffmpeg_cmd = input.output(f"{output_filename}", **ffmpeg_options)
+    ffmpeg_cmd = input.output(f"{output_filename}", **options)
 
-    # print(' '.join(ffmpeg_cmd.compile()))
+    if verbosity:
+        print(' '.join(ffmpeg_cmd.compile()))
     process = (
         ffmpeg_cmd.run_async(quiet=True, overwrite_output=True)
     )
@@ -31,6 +35,9 @@ def run(input_filename, output_filename, progress_callback=None, ffmpeg_options=
 
     buffer = process.stderr.readline()
     while buffer:
+        if verbosity >= 2:
+            print(buffer)
+
         matches = regex.search(str(buffer))
         if matches:
             current_time = parse_time(matches.group(3))
@@ -39,7 +46,8 @@ def run(input_filename, output_filename, progress_callback=None, ffmpeg_options=
             if progress_callback:
                 progress_callback(percent_complete)
 
-            # print(f'Sec: {current_time} of {total_time}, perc: {percent_complete}, speed: {float(speed)}')
+            if verbosity:
+                print(f'Sec: {current_time} of {total_time}, perc: {percent_complete}, speed: {float(speed)}')
 
         buffer = process.stderr.read(160)
 
