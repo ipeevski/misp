@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mmisp"
-version = "0.1.7"
+version = "0.1.8"
 authors = [
   { name="Ivan Peevski", email="cyberhorse@gmail.com" },
 ]
@@ -22,4 +22,4 @@ classifiers = [
 "Bug Tracker" = "https://github.com/ipeevski/misp/issues"
 
 [project.scripts]
-mmisp = "mmisp:process"
+mmisp = "mmisp:process:main"
